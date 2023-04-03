@@ -44,7 +44,7 @@ public:
       const uint8_t acHz = 50U,
       const float dimRangeMin = 0.25F,
       const float dimRangeMax = 0.75F,
-      const float zcdThreshold = 0.95F);
+      const float zcdThreshold = 0.992F);
 
   void destroy();
 
