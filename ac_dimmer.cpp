@@ -6,9 +6,9 @@
 // AcDimmerInterruptHandler
 //--------------------------------------------------
 
-#define TICKS_PER_US 5U         // ticks per us (5 for TIM_DIV16 @ 80MHz)
-#define GATE_PULSE_DURATION 50U // required minimum time (us) to trigger the triac's gate
-#define ZERO_CROSS_DURATION 80U // required minimum zero cross duration (us) between falling and rising edges
+#define TICKS_PER_US 5U            // ticks per us (5 for TIM_DIV16 @ 80MHz)
+#define GATE_PULSE_DURATION_US 50U // duration (us) to trigger the triac's gate
+#define ZERO_CROSS_DURATION_US 16U // zero cross duration (us) between falling and rising edges
 
 AcDimmer *AcDimmerInterruptHandler::smDimmer{nullptr};
 
@@ -26,9 +26,9 @@ void IRAM_ATTR AcDimmerInterruptHandler::isr_timer()
 {
   if (smDimmer->mGatePulseFlag)
   {
-    GPOS = (1 << smDimmer->mGatePin);                 // turn the triac on
-    smDimmer->mGatePulseFlag = false;                 // reset the flag to turn the triac off after gate pulse duration elapsed
-    timer1_write(GATE_PULSE_DURATION * TICKS_PER_US); // set gate pulse duration time
+    GPOS = (1 << smDimmer->mGatePin);                    // turn the triac on
+    smDimmer->mGatePulseFlag = false;                    // reset the flag to turn the triac off after gate pulse duration elapsed
+    timer1_write(GATE_PULSE_DURATION_US * TICKS_PER_US); // set gate pulse duration time
   }
   else
   {
@@ -56,7 +56,7 @@ void IRAM_ATTR AcDimmerInterruptHandler::isr_zeroCross()
     {
       smDimmer->mGatePulseFlag = true;                                                                         // set the flag to turn the triac on after phase cut off time elapsed
       const uint32_t deltaCorrFactor = smDimmer->mLastZeroCrossTime ? (smDimmer->mHalfCycleTime - tDelta) : 0; // calculate delta correction factor
-      timer1_write((ZERO_CROSS_DURATION + smDimmer->mPhaseCutTime * TICKS_PER_US) - deltaCorrFactor);          // set phase cut off time with delta correction factor
+      timer1_write((ZERO_CROSS_DURATION_US + smDimmer->mPhaseCutTime) * TICKS_PER_US - deltaCorrFactor);       // set phase cut off time with delta correction factor
     }
 
     smDimmer->mLastZeroCrossTime = t;
