@@ -32,7 +32,7 @@ void loop()
   // dimmer.setDimLevel(0.5F);
 
   // set a new dim range as %23 to %77 on the fly, dimming level will be re-mapped into this range
-  // setDimRange(0.23F, 0.77F);
+  // dimmer.setDimRange(0.23F, 0.77F);
 
   // ...
 }
